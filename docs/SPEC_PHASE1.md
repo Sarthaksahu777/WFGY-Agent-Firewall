@@ -27,6 +27,18 @@ Phase 1 does not include:
 - full Atlas telemetry integration
 - multi-channel HITL integrations
 - automatic policy learning
+- any in-band text-triggered bypass mechanism
+- any master-key-style override mechanism
+- any privileged admin override path inside the normal agent conversation or tool flow
+
+## Security boundary clarification
+
+Phase 1 must not include any text-triggered override, hidden master key, or in-band bypass path.
+
+Human approval in Phase 1 is limited to the explicit terminal review flow for `REVIEW` actions.
+It must not function as a privileged override channel that bypasses the firewall decision process.
+
+Any future admin or privileged override design is out of scope for Phase 1 and must be specified separately with its own authentication and security model.
 
 ## Decision contract
 
@@ -77,6 +89,8 @@ The firewall returns one of:
 - block the tool call
 - pause and request human review
 
+No Phase 1 output path may bypass the firewall by means of a text trigger, embedded phrase, or hidden override token.
+
 ## Security Critic requirements
 
 Phase 1 must implement deterministic checks for at least:
@@ -106,6 +120,9 @@ For `REVIEW` actions:
 - operator must see a short readable summary
 - operator can return approve or reject
 - final operator decision must be logged
+
+The Phase 1 human review flow is a narrow approval step for flagged actions only.
+It must not be treated as a general privileged control channel.
 
 ## Audit log requirements
 
@@ -143,3 +160,5 @@ The Phase 1 code structure should keep placeholders for:
 - simplified scar memory
 - residue validation
 - structured failure tagging
+
+Any future privileged admin control, override channel, or out-of-band authorization model must be designed as a separate Phase 2 or later extension and must not be merged implicitly into the Phase 1 firewall path.
